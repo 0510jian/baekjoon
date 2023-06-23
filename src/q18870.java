@@ -8,18 +8,23 @@ public class q18870 {
 
         int N = Integer.parseInt(br.readLine());
         String[] M = br.readLine().split(" ");
-
         ArrayList<Integer> sortM = new ArrayList<>();
-        for(String m : M)
-            if(!sortM.contains(Integer.parseInt(m))) sortM.add(Integer.parseInt(m));
+        for(int i=0; i<N; i++) {
+            sortM.add(Integer.parseInt(M[i]));
+        }
         sortM.sort(Comparator.naturalOrder());
 
-        for(int i=0; i<M.length; i++) {
-            for(int j=0; j<sortM.size(); j++) {
-                if(sortM.get(j) == Integer.parseInt(M[i])) {
-                    bw.write(j+" "); break;
-                }
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        int count = 0;
+        for(int m : sortM) {
+            if(!map.containsKey(m)) {
+                map.put(m, count);
+                count++;
             }
+        }
+
+        for(int i=0; i<N; i++) {
+            bw.write(map.get(Integer.parseInt(M[i])) + " ");
         }
         bw.flush();
     }
