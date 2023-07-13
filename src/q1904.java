@@ -14,11 +14,14 @@ public class q1904 {
         memo = new int[N+1];
 
         memo[1] = 1;
-        memo[2] = 2;
+        try {
+            memo[2] = 2;
 
-        for(int i=3; i< memo.length; i++) {
-            memo[i] = (memo[i-1] + memo[i-2]) % num;
-        }
+            for(int i=3; i<memo.length; i++) {
+                memo[i] = (memo[i-1] + memo[i-2]) % num;
+            }
+        } catch (Exception e) {}
+
         bw.write(memo[N] + "");
         bw.flush();
     }
