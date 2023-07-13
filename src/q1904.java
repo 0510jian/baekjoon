@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 
 public class q1904 {
     static int[] memo;
+    static int num = 15746;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -15,16 +16,10 @@ public class q1904 {
         memo[1] = 1;
         memo[2] = 2;
 
-        bw.write(func(N) + "");
-        bw.flush();
-    }
-    public static int func(int N) {
-        if(N == 1 || N == 2) return memo[N];
-
-        if(memo[N] == 0) {
-            memo[N] = (func(N-1) + func(N-2)) % 15746;
+        for(int i=3; i< memo.length; i++) {
+            memo[i] = (memo[i-1] + memo[i-2]) % num;
         }
-
-        return memo[N];
+        bw.write(memo[N] + "");
+        bw.flush();
     }
 }
