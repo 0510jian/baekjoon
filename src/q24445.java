@@ -51,9 +51,6 @@ public class q24445 {
     }
 
     public static void bfs(int R) {
-        for(int i=1; i< visited.length; i++) {
-            if(i != R) visited[i] = 0;
-        }
         visited[R] = ++visitCount;
 
         // 큐에 시작 정점 R 추가
@@ -66,7 +63,6 @@ public class q24445 {
                     visited[v] = ++visitCount;
                     enqueue(v);
                 }
-
             }
         }
     }
