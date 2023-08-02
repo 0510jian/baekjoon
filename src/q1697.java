@@ -1,82 +1,71 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class q1697 {
-    public static ArrayList<ArrayList<Integer>> graph;
-    public static boolean[] visited;
-    public static ArrayList<Integer> queue;
+    static int NUM = 100000;
 
-    public static int[][] list = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
+    static class Node {
+        int index;
+        int w;
+
+        Node(int i, int w) {
+            this.index = i;
+            this.w = w;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int T = Integer.parseInt(br.readLine());
-        for(int r=0; r<T; r++) {
-            // 체스판 정의
-            int l = Integer.parseInt(br.readLine());
-            visited = new boolean[l*l];
+        StringTokenizer tk = new StringTokenizer(br.readLine(), " ");
+        int N = Integer.parseInt(tk.nextToken());
+        int K = Integer.parseInt(tk.nextToken());
 
-            // 그래프 생성
-            graph = new ArrayList<>();
-            for(int i = 0; i<l*l; i++) graph.add(new ArrayList<>());
-            for(int i=0; i<l; i++) {
-                for(int j=0; j<l; j++) {
-                    for (int k = 0; k < list.length; k++) {
-                        int a = list[k][0];
-                        int b = list[k][1];
-                        if(i+a >= 0 && i+a < l && j+b >= 0 && j+b < l)
-                            graph.get(i*l + j).add((i+a)*l + (j+b));
-                    }
-                }
-            }
-
-            // 좌표 입력
-            String[] input = br.readLine().split(" ");
-            int startA = Integer.parseInt(input[0]);
-            int startB = Integer.parseInt(input[1]);
-            input = br.readLine().split(" ");
-            int endA = Integer.parseInt(input[0]);
-            int endB = Integer.parseInt(input[1]);
-
-            // bfs
-            queue = new ArrayList<>();
-            bw.write(bfs(startA*l + startB, endA*l+endB) + "\n");
-        }
+        bw.write(dijkstra(N, K) + "");
         bw.flush();
     }
 
-    public static int bfs(int S, int E) {
-        HashMap<Integer, Integer> map = new HashMap<>();
+    public static int dijkstra(int N, int K) {
+        boolean[] visited = new boolean[NUM+1];
+        visited[N] = true;
 
-        visited[S] = true;
-        map.put(S, 0);
-        enqueue(S);
+        int[] dist = new int[NUM+1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[N] = 0;
 
-        while(queue.size() > 0) {
-            int u = dequeue();
-            if(visited[E]) return map.get(E);
+        PriorityQueue<Node> pq = new PriorityQueue<>(((o1, o2) -> o1.w - o2.w));
+        pq.offer(new Node(N, 0));
 
-            for(int v : graph.get(u)) {
-                if(!visited[v]) {
-                    visited[v] = true;
-                    enqueue(v);
-                    map.put(v, map.get(u)+1);
+        while(!pq.isEmpty()) {
+            Node present = pq.poll();
+
+            if(present.index - 1 >= 0 && present.index - 1 <= 100000) {
+                Node next = new Node(present.index-1, 1);
+                if(!visited[next.index] && dist[next.index] > dist[present.index] + next.w) {
+                    dist[next.index] = dist[present.index] + next.w;
+                    pq.offer(new Node(next.index, dist[next.index]));
                 }
             }
+            if(present.index + 1 >= 0 && present.index + 1 <= 100000) {
+                Node next = new Node(present.index+1, 1);
+                if(!visited[next.index] && dist[next.index] > dist[present.index] + next.w) {
+                    dist[next.index] = dist[present.index] + next.w;
+                    pq.offer(new Node(next.index, dist[next.index]));
+                }
+            }
+            if(present.index * 2 >= 0 && present.index * 2 <= 100000) {
+                Node next = new Node(present.index * 2, 1);
+                if(!visited[next.index] && dist[next.index] > dist[present.index] + next.w) {
+                    dist[next.index] = dist[present.index] + next.w;
+                    pq.offer(new Node(next.index, dist[next.index]));
+                }
+            }
+
         }
-        return 0;
-    }
 
-    public static void enqueue(int v) {
-        queue.add(v);
-    }
-
-    public static int dequeue() {
-        int output = queue.get(0);
-        queue.remove(0);
-        return output;
+        return dist[K];
     }
 }
